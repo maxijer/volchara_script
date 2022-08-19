@@ -6,8 +6,12 @@ class Parser():
     def __init__(self):
         self.pg = ParserGenerator(
             # Список всех токенов, принятых парсером.
-            ['NUMBER', 'AUF', 'OPEN_PAREN', 'CLOSE_PAREN',
-             'SEMI_COLON', 'SUM', 'SUB']
+            ['STRING', 'INTEGER', 'FLOAT', 'IDENTIFIER', 'BOOLEAN',
+             'PLUS', 'MINUS', 'MUL', 'DIV',
+             'IF', 'ELSE', 'COLON', 'END', 'AND', 'OR', 'NOT', 'LET', 'WHILE',
+             '(', ')', '=', '==', '!=', '>=', '<=', '<', '>', '[', ']', ',',
+             '{', '}',
+             '$end', 'NEWLINE', 'FUNCTION']
         )
 
     def parse(self):
