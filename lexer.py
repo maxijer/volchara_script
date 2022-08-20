@@ -1,7 +1,7 @@
 from errors import IllegalCharError
 from Position import Position
 
-TT_INT = 'TT_INT'
+TT_INT = 'INT'
 TT_FLOAT = 'FLOAT'
 TT_PLUS = 'PLUS'
 TT_MINUS = 'MINUS'
@@ -12,9 +12,15 @@ TT_RPAREN = 'RPAREN'
 
 
 class Token:
-    def __init__(self, type_, value=None):
+    def __init__(self, type_, value=None, pos_start=None, pos_end=None):
         self.type = type_
         self.value = value
+        if pos_start:
+            self.pos_start = pos_start.copy()
+            self.pos_end = pos_start.copy()
+            self.pos_end.advance()
+        if pos_end:
+            self.pos_end = pos_end.copy()
 
     def __repr__(self):
         if self.value:
