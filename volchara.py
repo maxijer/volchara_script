@@ -1,6 +1,3 @@
-from errors import IllegalCharError
-from Position import Position
-
 TT_INT = 'TT_INT'
 TT_FLOAT = 'FLOAT'
 TT_PLUS = 'PLUS'
@@ -12,7 +9,7 @@ TT_RPAREN = 'RPAREN'
 
 
 class Token:
-    def __init__(self, type_, value=None):
+    def __init__(self, type_, value):
         self.type = type_
         self.value = value
 
@@ -21,24 +18,20 @@ class Token:
             return f"{self.type}: {self.value}"
         return f"{self.type}"
 
-
 digits = '0123456789'
 
 
 class Lexer:
-    def __init__(self, fn, text):
-        self.fn = fn
+    def __init__(self, text):
         self.text = text
-        self.pos = Position(-1, 0, -1, fn, text)
+        self.pos = -1
         self.current_char = None
         self.advance()
 
     def advance(self):
-        self.pos.advance(self.current_char)
-        if self.pos.idx < len(self.text):
-            self.current_char = self.text[self.pos.idx]
-        else:
-            self.current_char = None
+        self.pos += 1
+        if self.pos < len(self.text):
+            self.current_char = self.text[self.pos]
 
     def make_tokens(self):
         tokens = []
@@ -67,11 +60,7 @@ class Lexer:
                 tokens.append(Token(TT_RPAREN))
                 self.advance()
             else:
-                pos_start = self.pos.copy()
-                char = self.current_char
-                self.advance()
-                return [], IllegalCharError(pos_start, self.pos, "'" + char + "'")
-        return tokens, None
+                return 'error'
 
     def make_number(self):
         num_str = ''
@@ -83,8 +72,8 @@ class Lexer:
                 num_str += '.'
             else:
                 num_str += self.current_char
-            self.advance()
         if dot_count == 0:
             return Token(TT_INT, int(num_str))
         else:
             return Token(TT_FLOAT, float(num_str))
+
