@@ -11,4 +11,4 @@ def run(fn, text):
     # Create AST
     parser = Parser(tokens)
     AST = parser.parse()
-    return AST, None
+    return AST.node, AST.error
