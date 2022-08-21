@@ -1,4 +1,5 @@
 from Parser import Parser
+from interpreter import Interpreter
 from lexer import Lexer
 
 
@@ -11,4 +12,12 @@ def run(fn, text):
     # Create AST
     parser = Parser(tokens)
     AST = parser.parse()
-    return AST.node, AST.error
+    if AST.error:
+        return None, AST.error
+
+    # interpreter
+
+    interpreter = Interpreter()
+    result = interpreter.visit(AST.node)
+
+    return result, None
