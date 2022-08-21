@@ -1,4 +1,5 @@
 from Parser import Parser
+from context import Context
 from interpreter import Interpreter
 from lexer import Lexer
 
@@ -18,6 +19,7 @@ def run(fn, text):
     # interpreter
 
     interpreter = Interpreter()
-    result = interpreter.visit(AST.node)
+    context = Context("<program>")
+    result = interpreter.visit(AST.node, context)
 
-    return result, None
+    return result.value, result.error
