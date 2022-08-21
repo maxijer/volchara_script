@@ -1,4 +1,4 @@
-from lexer import TT_PLUS, TT_MINUS, TT_MUL, TT_DIV
+from lexer import TT_PLUS, TT_MINUS, TT_MUL, TT_DIV, TT_POW, TT_PROC
 from runtime_result import RTResult
 from value import Number
 
@@ -34,6 +34,10 @@ class Interpreter:
             result, error = left.multed_by(right)
         elif node.op_tok.type == TT_DIV:
             result, error = left.dived_by(right)
+        elif node.op_tok.type == TT_POW:
+            result, error = left.pow_by(right)
+        elif node.op_tok.type == TT_PROC:
+            result, error = left.proc_by(right)
 
         if error:
             return res.failure(error)

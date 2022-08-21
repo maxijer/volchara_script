@@ -10,6 +10,8 @@ TT_DIV = 'DIV'
 TT_LPAREN = 'LPAREN'
 TT_RPAREN = 'RPAREN'
 TT_EOF = 'EOF'
+TT_POW = 'POW'
+TT_PROC = 'PROC'
 
 
 class Token:
@@ -72,6 +74,12 @@ class Lexer:
                 self.advance()
             elif self.current_char == ')':
                 tokens.append(Token(TT_RPAREN, pos_start=self.pos))
+                self.advance()
+            elif self.current_char == '^':
+                tokens.append(Token(TT_POW, pos_start=self.pos))
+                self.advance()
+            elif self.current_char == '%':
+                tokens.append(Token(TT_PROC, pos_start=self.pos))
                 self.advance()
             else:
                 pos_start = self.pos.copy()
