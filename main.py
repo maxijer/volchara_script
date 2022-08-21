@@ -2,7 +2,11 @@ from Parser import Parser
 from context import Context
 from interpreter import Interpreter
 from lexer import Lexer
+from symbol_table import SymbolTable
+from value import Number
 
+global_symbol_tabel = SymbolTable()
+global_symbol_tabel.set("null", Number(0))
 
 def run(fn, text):
     # GET Tokens
@@ -20,6 +24,7 @@ def run(fn, text):
 
     interpreter = Interpreter()
     context = Context("<program>")
+    context.symbol_table = global_symbol_tabel
     result = interpreter.visit(AST.node, context)
 
     return result.value, result.error
