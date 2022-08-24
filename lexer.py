@@ -19,7 +19,12 @@ TT_RPAREN = 'RPAREN'
 TT_EOF = 'EOF'
 TT_POW = 'POW'
 TT_PROC = 'PROC'
-
+TT_EE = "EE"
+TT_NE = "NE"
+TT_LT = "LT"
+TT_GT = "GT"
+TT_LTE = "LTE"
+TT_GTE = "GTE"
 
 class Token:
     def __init__(self, type_, value=None, pos_start=None, pos_end=None):
@@ -46,7 +51,7 @@ digits = '0123456789'
 
 LETTERS_DIGITS = LETTERS + digits
 
-KEYWORDS = ['VOLCHARA']
+KEYWORDS = ['VOLCHARA', 'AND', 'OR', 'NOT']
 
 class Lexer:
     def __init__(self, fn, text):
@@ -62,6 +67,47 @@ class Lexer:
             self.current_char = self.text[self.pos.idx]
         else:
             self.current_char = None
+
+    def make_not_equals(self):
+        pos_start = self.pos.copy()
+        self.advance()
+
+        if self.current_char == '=':
+            self.advance()
+            return Token(TT_NE, pos_start=pos_start, pos_end=self.pos), None
+        self.advance()
+        return None, ExpectedCharError(pos_start, self.pos, "'=' after '!'")
+
+    def make_less_than(self):
+        tok_type = TT_LT
+        pos_start = self.pos.copy()
+        self.advance()
+
+        if self.current_char == '@':
+            self.advance()
+            tok_type = TT_LTE
+        return Token(tok_type, pos_start=pos_start, pos_end=self.pos)
+
+    def make_greater_than(self):
+        tok_type = TT_GT
+        pos_start = self.pos.copy()
+        self.advance()
+
+        if self.current_char == '@':
+            self.advance()
+            tok_type = TT_GTE
+        return Token(tok_type, pos_start=pos_start, pos_end=self.pos)
+
+    def make_equals(self):
+        tok_type = TT_EQ
+        pos_start = self.pos.copy()
+        self.advance()
+
+        if self.current_char == '@':
+            self.advance()
+            tok_type = TT_EE
+        return Token(tok_type, pos_start=pos_start, pos_end=self.pos)
+
 
     def make_tokens(self):
         tokens = []
@@ -100,6 +146,17 @@ class Lexer:
             elif self.current_char == '@':
                 tokens.append(Token(TT_EQ_DOG, pos_start=self.pos))
                 self.advance()
+            elif self.current_char == "!":
+                tok, error = self.make_not_equals()
+                if error:
+                    return [], error
+                tokens.append(tok)
+            elif self.current_char == '=':
+                tokens.append(self.make_equals())
+            elif self.current_char == '<':
+                tokens.append(self.make_less_than())
+            elif self.current_char == '>':
+                tokens.append(self.make_greater_than())
             else:
                 pos_start = self.pos.copy()
                 char = self.current_char

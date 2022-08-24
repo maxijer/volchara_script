@@ -1,5 +1,6 @@
 from errors import RTError
-from lexer import TT_PLUS, TT_MINUS, TT_MUL, TT_DIV, TT_POW, TT_PROC
+from lexer import TT_PLUS, TT_MINUS, TT_MUL, TT_DIV, TT_POW, TT_PROC, TT_EE, TT_NE, TT_LT, TT_GT, TT_LTE, TT_GTE, \
+    TT_KEYWORD
 from runtime_result import RTResult
 from value import Number
 
@@ -60,6 +61,23 @@ class Interpreter:
             result, error = left.pow_by(right)
         elif node.op_tok.type == TT_PROC:
             result, error = left.proc_by(right)
+        elif node.op_tok.type == TT_EE:
+            result, error = left.get_comparison_eq(right)
+        elif node.op_tok.type == TT_NE:
+            result, error = left.get_comparison_ne(right)
+        elif node.op_tok.type == TT_LT:
+            result, error = left.get_comparison_lt(right)
+        elif node.op_tok.type == TT_GT:
+            result, error = left.get_comparison_gt(right)
+        elif node.op_tok.type == TT_LTE:
+            result, error = left.get_comparison_lte(right)
+        elif node.op_tok.type == TT_GTE:
+            result, error = left.get_comparison_gte(right)
+        elif node.op_tok.matches(TT_KEYWORD, 'AND'):
+            result, error = left.anded_by(right)
+        elif node.op_tok.matches(TT_KEYWORD, 'OR'):
+            result, error = left.ored_by(right)
+
 
         if error:
             return res.failure(error)

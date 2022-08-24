@@ -6,7 +6,9 @@ from symbol_table import SymbolTable
 from value import Number
 
 global_symbol_tabel = SymbolTable()
-global_symbol_tabel.set("null", Number(0))
+global_symbol_tabel.set("NULL", Number(0))
+global_symbol_tabel.set("TRUE", Number(1))
+global_symbol_tabel.set("FALSE", Number(0))
 
 def run(fn, text):
     # GET Tokens
